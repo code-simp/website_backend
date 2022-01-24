@@ -1,18 +1,25 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 var cors = require('cors');
+const User = require('./models/userSchema')
+
+mongoose.connect('mongodb+srv://admin-tarun:Tarunnexus9@maincluster.pgzzp.mongodb.net/myWebsite', { useNewUrlParser: true })
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(cors({ origin: 'http://localhost:3000' }));
 
-app.get('/', function (req, res) {
-    res.send('works')
-})
+app.post('/contact', function (req, res) {
 
-app.post('/contact', (req, res) => {
-    console.log(req.body)
-    res.send('success')
+    const user = new User({
+        name: req.body.name,
+        email: req.body.email
+    })
+
+    user.save()
+
+    res.status(200).json(user)
 })
 
 app.listen(8000, function () {
